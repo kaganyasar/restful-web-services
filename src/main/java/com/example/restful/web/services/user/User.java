@@ -1,18 +1,23 @@
 package com.example.restful.web.services.user;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@ApiModel(description = "Details about user")
+@Entity
 @JsonFilter("UserFilterProvider")
+@ApiModel(description = "Details about user")
 public class User {
-    @JsonIgnore
+
+    @Id
+    @GeneratedValue
     private Integer id;
 
     @Size(min = 2, max = 32, message = "Character size should be in 2 - 32")
