@@ -1,5 +1,6 @@
 package com.example.restful.web.services.user.jpa;
 
+import com.example.restful.web.services.exception.UserNotFoundException;
 import com.example.restful.web.services.user.data.User;
 import com.example.restful.web.services.user.inmemory.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +15,35 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserJpaController {
+
     @Autowired
     private UserDaoService userDaoService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MessageSource messageSource;
 
     @GetMapping("/jpa/users/retrieveAll")
     public List<User> retrieveAllUsers() {
-        return userDaoService.retrieveAllUsers();
+        return userRepository.findAll();
     }
 
     @GetMapping("/jpa/users/retrieve/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
-        User user = userDaoService.retrieveUser(id);
-        EntityModel<User> entityModel = EntityModel.of(user);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(String.format("User with id: %d, is not found", id));
+        }
+        EntityModel<User> entityModel = EntityModel.of(user.get());
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         entityModel.add(linkTo.withRel("all-users"));
         return entityModel;

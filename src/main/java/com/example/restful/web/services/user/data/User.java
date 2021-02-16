@@ -1,6 +1,5 @@
 package com.example.restful.web.services.user.data;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,7 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
-@JsonFilter("UserFilterProvider")
+//@JsonFilter("UserFilterProvider")
 @ApiModel(description = "Details about user")
 public class User {
 

@@ -17,6 +17,7 @@ public class FilteringController {
     @Autowired
     private UserDaoService userDaoService;
 
+    //for this filter to work, @JsonFilter should be used in User
     @GetMapping("/users/retrieve/filtered/{id}")
     public MappingJacksonValue retrieveWithFilter(@PathVariable int id) {
         User user = userDaoService.retrieveUser(id);
