@@ -1,4 +1,4 @@
-package com.example.restful.web.services.user;
+package com.example.restful.web.services.user.data;
 
 public enum Role {
     ADMIN,

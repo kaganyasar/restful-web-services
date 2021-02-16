@@ -1,5 +1,7 @@
-package com.example.restful.web.services.user;
+package com.example.restful.web.services.user.jpa;
 
+import com.example.restful.web.services.user.data.User;
+import com.example.restful.web.services.user.inmemory.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,20 +19,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class UserController {
-
+public class UserJpaController {
     @Autowired
     private UserDaoService userDaoService;
 
     @Autowired
     private MessageSource messageSource;
 
-    @GetMapping("/users/retrieveAll")
+    @GetMapping("/jpa/users/retrieveAll")
     public List<User> retrieveAllUsers() {
         return userDaoService.retrieveAllUsers();
     }
 
-    @GetMapping("/users/retrieve/{id}")
+    @GetMapping("/jpa/users/retrieve/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
         User user = userDaoService.retrieveUser(id);
         EntityModel<User> entityModel = EntityModel.of(user);
@@ -39,7 +40,7 @@ public class UserController {
         return entityModel;
     }
 
-    @PostMapping("/users/upsert")
+    @PostMapping("/jpa/users/upsert")
     public ResponseEntity<String> createUser(@Valid @RequestBody User user) {
         User upsertedUser = userDaoService.upsertUser(user);
         URI location = ServletUriComponentsBuilder
@@ -49,13 +50,13 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping("/users/delete/{id}")
+    @DeleteMapping("/jpa/users/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id) {
         userDaoService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "/users/greetings")
+    @GetMapping(path = "/jpa/users/greetings")
     public String getGreetingsMessage() {
         return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
     }

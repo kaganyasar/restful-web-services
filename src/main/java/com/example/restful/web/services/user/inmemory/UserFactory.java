@@ -1,5 +1,7 @@
-package com.example.restful.web.services.user;
+package com.example.restful.web.services.user.inmemory;
 
+import com.example.restful.web.services.user.data.Role;
+import com.example.restful.web.services.user.data.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

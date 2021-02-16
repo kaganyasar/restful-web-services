@@ -1,6 +1,8 @@
-package com.example.restful.web.services.user;
+package com.example.restful.web.services.user.inmemory;
 
 import com.example.restful.web.services.exception.UserNotFoundException;
+import com.example.restful.web.services.user.data.Role;
+import com.example.restful.web.services.user.data.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

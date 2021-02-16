@@ -1,4 +1,4 @@
-package com.example.restful.web.services.user;
+package com.example.restful.web.services.user.data;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import io.swagger.annotations.ApiModel;

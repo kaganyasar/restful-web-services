@@ -1,7 +1,7 @@
-package com.example.restful.web.services.filtering;
+package com.example.restful.web.services.user.filtered;
 
-import com.example.restful.web.services.user.User;
-import com.example.restful.web.services.user.UserDaoService;
+import com.example.restful.web.services.user.data.User;
+import com.example.restful.web.services.user.inmemory.UserDaoService;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
