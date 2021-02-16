@@ -2,10 +2,7 @@ package com.example.restful.web.services.user.jpa;
 
 import com.example.restful.web.services.exception.UserNotFoundException;
 import com.example.restful.web.services.user.data.User;
-import com.example.restful.web.services.user.inmemory.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserJpaController {
 
     @Autowired
-    private UserDaoService userDaoService;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private MessageSource messageSource;
 
     @GetMapping("/jpa/users/retrieveAll")
     public List<User> retrieveAllUsers() {
@@ -51,7 +42,7 @@ public class UserJpaController {
 
     @PostMapping("/jpa/users/upsert")
     public ResponseEntity<String> createUser(@Valid @RequestBody User user) {
-        User upsertedUser = userDaoService.upsertUser(user);
+        User upsertedUser = userRepository.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -61,12 +52,7 @@ public class UserJpaController {
 
     @DeleteMapping("/jpa/users/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id) {
-        userDaoService.deleteUser(id);
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping(path = "/jpa/users/greetings")
-    public String getGreetingsMessage() {
-        return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
     }
 }
