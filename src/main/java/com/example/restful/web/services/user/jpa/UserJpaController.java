@@ -1,7 +1,10 @@
 package com.example.restful.web.services.user.jpa;
 
 import com.example.restful.web.services.exception.UserNotFoundException;
+import com.example.restful.web.services.user.data.Post;
 import com.example.restful.web.services.user.data.User;
+import com.example.restful.web.services.user.jpa.repository.PostRepository;
+import com.example.restful.web.services.user.jpa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -23,6 +26,9 @@ public class UserJpaController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
     @GetMapping("/jpa/users/retrieveAll")
     public List<User> retrieveAllUsers() {
         return userRepository.findAll();
@@ -30,14 +36,39 @@ public class UserJpaController {
 
     @GetMapping("/jpa/users/retrieve/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
             throw new UserNotFoundException(String.format("User with id: %d, is not found", id));
         }
-        EntityModel<User> entityModel = EntityModel.of(user.get());
+        EntityModel<User> entityModel = EntityModel.of(userOptional.get());
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         entityModel.add(linkTo.withRel("all-users"));
         return entityModel;
+    }
+
+    @GetMapping("/jpa/users/retrieve/{id}/posts")
+    public List<Post> retrieveUserPosts(@PathVariable int id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(String.format("User with id: %d, is not found", id));
+        }
+        return userOptional.get().getPosts();
+    }
+
+    @PostMapping("/jpa/users/{id}/create/post")
+    public ResponseEntity<String> createUserPost(@PathVariable int id, @RequestBody Post post) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(String.format("User with id: %d, is not found", id));
+        }
+        User user = userOptional.get();
+        post.setUser(user);
+        postRepository.save(post);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(post.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/jpa/users/upsert")
